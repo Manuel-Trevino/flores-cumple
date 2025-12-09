@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramo de Flores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #f0f8ff, #e0f0ff);
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .contenedor {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+            width: 100%;
+        }
+        
+        .titulo {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 3px solid #ff99cc;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+        
+        h1 {
+            color: #ff6699;
+            font-size: clamp(2rem, 6vw, 3.2rem);
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Layout principal para desktop */
+        .layout-principal {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            gap: 30px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        /* Área del ramo - CORREGIDO PARA MÓVIL */
+        .ramo-container {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+            min-height: 300px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: visible !important; /* IMPORTANTE: Permitir que las flores sean visibles */
+        }
+        
+        /* Controles a la derecha - Desktop */
+        .controles-desktop {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 220px;
+            border: 2px solid #ffccdd;
+            position: sticky;
+            top: 30px;
+        }
+        
+        /* Controles móvil (ocultos en desktop) */
+        .controles-movil {
+            display: none;
+        }
+        
+        .boton {
+            background: linear-gradient(135deg, #ff6699, #ff3366);
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .boton:hover {
+            background: linear-gradient(135deg, #ff3366, #ff0066);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 102, 153, 0.4);
+        }
+        
+        /* Flores completas - CORREGIDO: asegurar visibilidad */
+        .flor {
+            position: absolute !important;
+            animation: flotar 6s ease-in-out infinite;
+            cursor: pointer;
+            z-index: 2;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        .centro {
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle, #ffd700, #ffaa00);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .petalos {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .petalo {
+            position: absolute;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: var(--flor-color);
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+        }
+        
+        .tallo {
+            position: absolute;
+            width: 6px;
+            height: 120px;
+            background: linear-gradient(to top, #2e8b57, #3cb371);
+            top: calc(50% + 25px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            border-radius: 3px;
+        }
+        
+        .hoja {
+            position: absolute;
+            width: 25px;
+            height: 35px;
+            background-color: #228b22;
+            border-radius: 50% 0 50% 0;
+            transform: rotate(45deg);
+            z-index: 2;
+        }
+        
+        /* Animaciones */
+        @keyframes flotar {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-12px) rotate(4deg);
+            }
+        }
+        
+        @keyframes girarPetalos {
+            0%, 100% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(5deg);
+            }
+        }
+        
+        @keyframes aparecer {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        
+        /* Media queries para móvil - CORREGIDO */
+        @media (max-width: 768px) {
+            .contenedor {
+                padding: 15px 10px;
+                justify-content: flex-start;
+                min-height: auto;
+            }
+            
+            .titulo {
+                padding: 15px 20px;
+                margin-top: 10px;
+                margin-bottom: 20px;
+                width: 95%;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .layout-principal {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                width: 100%;
+                height: auto;
+            }
+            
+            .ramo-container {
+                width: 100% !important;
+                height: 350px !important;
+                max-width: 500px;
+                min-height: 300px !important;
+                margin: 0 auto;
+                position: relative !important;
+                overflow: visible !important;
+            }
+            
+            /* Ocultar controles desktop en móvil */
+            .controles-desktop {
+                display: none;
+            }
+            
+            /* Mostrar controles móvil */
+            .controles-movil {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+                width: 95%;
+                max-width: 500px;
+                padding: 15px;
+                background: white;
+                border-radius: 15px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                border: 2px solid #ffccdd;
+                margin-top: 10px;
+            }
+            
+            .boton-movil {
+                flex: 1;
+                min-width: 150px;
+                padding: 14px 16px;
+                font-size: 1rem;
+                background: linear-gradient(135deg, #ff6699, #ff3366);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                font-weight: bold;
+                transition: all 0.3s;
+                text-align: center;
+            }
+            
+            .boton-movil:hover {
+                background: linear-gradient(135deg, #ff3366, #ff0066);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(255, 102, 153, 0.4);
+            }
+            
+            /* Asegurar que las flores sean visibles en móvil */
+            .flor {
+                position: absolute !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                transform-origin: center center;
+                will-change: transform;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .ramo-container {
+                height: 320px !important;
+                min-height: 280px !important;
+            }
+            
+            .titulo {
+                padding: 12px 15px;
+                margin-bottom: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .controles-movil {
+                padding: 12px;
+                gap: 10px;
+            }
+            
+            .boton-movil {
+                min-width: 120px;
+                padding: 12px 14px;
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .ramo-container {
+                height: 280px !important;
+                min-height: 250px !important;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .boton-movil {
+                min-width: 100%;
+                padding: 12px;
+            }
+            
+            .controles-movil {
+                flex-direction: column;
+            }
+        }
+        
+        /* Forzar visibilidad en todos los dispositivos */
+        @media (max-width: 1200px) {
+            .ramo-container {
+                overflow: visible !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="contenedor">
+        <div class="titulo">
+            <h1>Feliz Cumpleaños</h1>
+        </div>
+        
+        <div class="layout-principal">
+            <div class="ramo-container" id="ramoContainer">
+                <!-- Las flores completas aparecerán aquí -->
+            </div>
+            
+            <!-- Controles para Desktop -->
+            <div class="controles-desktop">
+                <button class="boton" onclick="agregarFlor()">🌹 Agregar Flor</button>
+                <button class="boton" onclick="cambiarColor()">🎨 Cambiar Color</button>
+                <button class="boton" onclick="limpiarFlores()">🗑️ Limpiar Todo</button>
+            </div>
+        </div>
+        
+        <!-- Controles para Móvil -->
+        <div class="controles-movil">
+            <button class="boton-movil" onclick="agregarFlor()">🌹 Agregar</button>
+            <button class="boton-movil" onclick="cambiarColor()">🎨 Color</button>
+            <button class="boton-movil" onclick="limpiarFlores()">🗑️ Limpiar</button>
+        </div>
+    </div>
+
+    <script>
+        const coloresFlores = [
+            '#FF69B4', '#FF1493', '#DA70D6', '#9370DB',
+            '#87CEEB', '#98FB98', '#FFD700', '#FFA500',
+            '#FF6347', '#40E0D0', '#FF6B9D', '#C71585'
+        ];
+        
+        let cantidadFlores = 0;
+        
+        // Función mejorada para posiciones
+        const getPosicionesRamo = () => {
+            const container = document.getElementById('ramoContainer');
+            if (!container) return [];
+            
+            // Esperar a que el contenedor tenga dimensiones
+            const width = container.offsetWidth || 400;
+            const height = container.offsetHeight || 350;
+            
+            const isMobile = window.innerWidth <= 768;
+            const spacing = isMobile ? 0.2 : 0.25;
+            
+            return [
+                {x: width * 0.5, y: height * 0.5, size: 1.0},
+                {x: width * (0.5 - spacing), y: height * (0.5 - spacing), size: 0.9},
+                {x: width * (0.5 + spacing), y: height * (0.5 - spacing), size: 0.9},
+                {x: width * (0.5 - spacing * 1.2), y: height * (0.5 + spacing * 0.3), size: 0.85},
+                {x: width * (0.5 + spacing * 1.2), y: height * (0.5 + spacing * 0.3), size: 0.85},
+                {x: width * (0.5 - spacing * 0.8), y: height * (0.5 + spacing), size: 0.8},
+                {x: width * (0.5 + spacing * 0.8), y: height * (0.5 + spacing), size: 0.8}
+            ];
+        };
+        
+        window.onload = function() {
+            // Pequeño retraso para asegurar que el DOM esté listo
+            setTimeout(() => {
+                crearRamoInicial();
+                ajustarParaDispositivo();
+            }, 100);
+        };
+        
+        function crearRamoInicial() {
+            const container = document.getElementById('ramoContainer');
+            if (!container) return;
+            
+            // Limpiar contenedor primero
+            container.innerHTML = '';
+            
+            const posiciones = getPosicionesRamo();
+            cantidadFlores = 0;
+            
+            console.log("Creando ramo inicial con", posiciones.length, "flores");
+            
+            for(let i = 0; i < posiciones.length; i++) {
+                setTimeout(() => {
+                    crearFlorCompleta(
+                        posiciones[i].x, 
+                        posiciones[i].y, 
+                        i,
+                        posiciones[i].size
+                    );
+                    cantidadFlores++;
+                }, i * 200);
+            }
+        }
+        
+        function crearFlorCompleta(x, y, indice, tamaño = 1.0) {
+            const container = document.getElementById('ramoContainer');
+            if (!container) return;
+            
+            const flor = document.createElement('div');
+            flor.className = 'flor';
+            flor.id = 'flor-' + Date.now() + '-' + indice;
+            
+            const isMobile = window.innerWidth <= 768;
+            const baseSize = isMobile ? 0.7 : 1.0;
+            
+            // Asegurar que las coordenadas sean números válidos
+            const posX = typeof x === 'number' ? x : 200;
+            const posY = typeof y === 'number' ? y : 200;
+            
+            flor.style.left = posX + 'px';
+            flor.style.top = posY + 'px';
+            
+            const tamañoAjustado = tamaño * baseSize * Math.min(window.innerWidth / 800, 1);
+            flor.style.transform = `scale(${tamañoAjustado})`;
+            flor.style.transformOrigin = 'center center';
+            
+            const tiempoAnim = 5 + Math.random() * 4;
+            flor.style.animationDuration = tiempoAnim + 's';
+            flor.style.animationDelay = Math.random() * 2 + 's';
+            flor.style.animationName = 'flotar';
+            
+            const colorIndex = indice % coloresFlores.length;
+            const colorFlor = coloresFlores[colorIndex];
+            flor.style.setProperty('--flor-color', colorFlor);
+            
+            const petalosDiv = document.createElement('div');
+            petalosDiv.className = 'petalos';
+            petalosDiv.style.animation = `girarPetalos ${tiempoAnim + 2}s ease-in-out infinite`;
+            petalosDiv.style.animationDelay = Math.random() * 1 + 's';
+            
+            const factorPantalla = Math.min(window.innerWidth / 800, 1) * (isMobile ? 0.7 : 1);
+            const tamañoPetaloGrande = Math.max(25 * factorPantalla, 15);
+            const tamañoPetaloMediano = Math.max(18 * factorPantalla, 12);
+            const tamañoPetaloPequeño = Math.max(12 * factorPantalla, 8);
+            
+            // Capa externa
+            for(let i = 0; i < 8; i++) {
+                const petalo = document.createElement('div');
+                petalo.className = 'petalo';
+                petalo.style.width = tamañoPetaloGrande + 'px';
+                petalo.style.height = (tamañoPetaloGrande * 1.4) + 'px';
+                petalo.style.opacity = '0.9';
+                petalo.style.backgroundColor = colorFlor;
+                
+                const angulo = i * 45;
+                const distancia = 28 * factorPantalla;
+                petalo.style.transform = `translate(-50%, -50%) rotate(${angulo}deg) translateY(-${distancia}px)`;
+                
+                petalosDiv.appendChild(petalo);
+            }
+            
+            // Capa intermedia
+            for(let i = 0; i < 6; i++) {
+                const petalo = document.createElement('div');
+                petalo.className = 'petalo';
+                petalo.style.width = tamañoPetaloMediano + 'px';
+                petalo.style.height = (tamañoPetaloMediano * 1.4) + 'px';
+                petalo.style.opacity = '0.95';
+                petalo.style.backgroundColor = colorFlor;
+                
+                const angulo = i * 60;
+                const distancia = 20 * factorPantalla;
+                petalo.style.transform = `translate(-50%, -50%) rotate(${angulo}deg) translateY(-${distancia}px)`;
+                petalosDiv.appendChild(petalo);
+            }
+            
+            // Capa interna
+            for(let i = 0; i < 4; i++) {
+                const petalo = document.createElement('div');
+                petalo.className = 'petalo';
+                petalo.style.width = tamañoPetaloPequeño + 'px';
+                petalo.style.height = (tamañoPetaloPequeño * 1.4) + 'px';
+                petalo.style.opacity = '1.0';
+                petalo.style.backgroundColor = colorFlor;
+                
+                const angulo = i * 90;
+                const distancia = 12 * factorPantalla;
+                petalo.style.transform = `translate(-50%, -50%) rotate(${angulo}deg) translateY(-${distancia}px)`;
+                petalosDiv.appendChild(petalo);
+            }
+            
+            flor.appendChild(petalosDiv);
+            
+            // Centro
+            const centroSize = Math.max(12 * factorPantalla, 8);
+            const centro = document.createElement('div');
+            centro.className = 'centro';
+            centro.style.width = centroSize + 'px';
+            centro.style.height = centroSize + 'px';
+            flor.appendChild(centro);
+            
+            // Tallo
+            const talloHeight = Math.max(55 * factorPantalla, 40);
+            const tallo = document.createElement('div');
+            tallo.className = 'tallo';
+            tallo.style.height = talloHeight + 'px';
+            tallo.style.top = `calc(50% + ${10 * factorPantalla}px)`;
+            flor.appendChild(tallo);
+            
+            // Hojas
+            for(let i = 0; i < 2; i++) {
+                const hoja = document.createElement('div');
+                hoja.className = 'hoja';
+                hoja.style.width = Math.max(12 * factorPantalla, 8) + 'px';
+                hoja.style.height = Math.max(16 * factorPantalla, 10) + 'px';
+                hoja.style.top = (45 * factorPantalla) + 'px';
+                hoja.style.left = i === 0 ? '40%' : '60%';
+                hoja.style.transform = `rotate(${i === 0 ? '30' : '-30'}deg) scale(${0.8 + Math.random() * 0.4})`;
+                flor.appendChild(hoja);
+            }
+            
+            // Evento para eliminar
+            flor.onclick = function(e) {
+                e.stopPropagation();
+                eliminarFlor(this.id);
+            };
+            
+            container.appendChild(flor);
+            
+            // Efecto de aparición
+            flor.style.animation = 'aparecer 0.8s ease-out forwards';
+            
+            console.log("Flor creada en posición:", posX, posY);
+        }
+        
+        function ajustarParaDispositivo() {
+            const isMobile = window.innerWidth <= 768;
+            const container = document.getElementById('ramoContainer');
+            
+            if (!container) return;
+            
+            if (isMobile) {
+                container.style.height = '320px';
+                container.style.minHeight = '280px';
+            } else {
+                container.style.height = '400px';
+                container.style.minHeight = '350px';
+            }
+        }
+        
+        function agregarFlor() {
+            if (cantidadFlores >= 12) {
+                alert("El ramo está completo (máximo 12 flores)");
+                return;
+            }
+            
+            const container = document.getElementById('ramoContainer');
+            if (!container) return;
+            
+            const width = container.offsetWidth || 400;
+            const height = container.offsetHeight || 350;
+            
+            const angulo = Math.random() * Math.PI * 2;
+            const radio = Math.min(width, height) * 0.15 + Math.random() * Math.min(width, height) * 0.1;
+            
+            const centroX = width * 0.5;
+            const centroY = height * 0.5;
+            
+            const x = centroX + Math.cos(angulo) * radio;
+            const y = centroY + Math.sin(angulo) * radio;
+            
+            const tamaño = 0.6 + Math.random() * 0.4;
+            crearFlorCompleta(x, y, cantidadFlores, tamaño);
+            cantidadFlores++;
+        }
+        
+        function cambiarColor() {
+            const nuevoColor = coloresFlores[Math.floor(Math.random() * coloresFlores.length)];
+            
+            const flores = document.querySelectorAll('.flor');
+            flores.forEach((flor) => {
+                flor.style.setProperty('--flor-color', nuevoColor);
+                
+                const petalos = flor.querySelectorAll('.petalo');
+                petalos.forEach(petalo => {
+                    petalo.style.backgroundColor = nuevoColor;
+                });
+            });
+            
+            document.body.style.background = `linear-gradient(to bottom, #f0f8ff, ${clarificarColor(nuevoColor, 90)})`;
+        }
+        
+        function eliminarFlor(id) {
+            const flor = document.getElementById(id);
+            if (flor) {
+                flor.style.transition = 'transform 0.5s, opacity 0.5s';
+                flor.style.transform = 'scale(0) rotate(180deg)';
+                flor.style.opacity = '0';
+                setTimeout(() => {
+                    if (flor.parentNode) {
+                        flor.parentNode.removeChild(flor);
+                        cantidadFlores--;
+                    }
+                }, 500);
+            }
+        }
+        
+        function limpiarFlores() {
+            const flores = document.querySelectorAll('.flor');
+            flores.forEach(flor => {
+                flor.style.transition = 'transform 0.5s, opacity 0.5s';
+                flor.style.transform = 'scale(0) rotate(180deg)';
+                flor.style.opacity = '0';
+                setTimeout(() => {
+                    if (flor.parentNode) {
+                        flor.parentNode.removeChild(flor);
+                    }
+                }, 500);
+            });
+            
+            cantidadFlores = 0;
+            document.body.style.background = 'linear-gradient(to bottom, #f0f8ff, #e0f0ff)';
+            
+            setTimeout(() => {
+                crearRamoInicial();
+            }, 800);
+        }
+        
+        function clarificarColor(color, porcentaje) {
+            const num = parseInt(color.replace("#", ""), 16);
+            const amt = Math.round(2.55 * porcentaje);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            
+            return "#" + (
+                0x1000000 + 
+                (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + 
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + 
+                (B < 255 ? B < 1 ? 0 : B : 255)
+            ).toString(16).slice(1);
+        }
+        
+        // Redimensionar
+        window.addEventListener('resize', function() {
+            ajustarParaDispositivo();
+            const flores = document.querySelectorAll('.flor');
+            const isMobile = window.innerWidth <= 768;
+            const baseSize = isMobile ? 0.7 : 1.0;
+            
+            flores.forEach((flor, index) => {
+                const tamañoOriginal = 0.8 + (index % 3) * 0.1;
+                const factorPantalla = Math.min(window.innerWidth / 800, 1) * baseSize;
+                flor.style.transform = `scale(${tamañoOriginal * factorPantalla})`;
+            });
+        });
+        
+        // Cambio automático de color
+        setInterval(() => {
+            if (cantidadFlores > 0 && Math.random() > 0.7) {
+                cambiarColor();
+            }
+        }, 12000);
+    </script>
+</body>
+</html>
